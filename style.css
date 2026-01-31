@@ -88,5 +88,35 @@ select {
     background-position: right 20px center;
 }
 
+@media (max-width: 600px) {
+
+  .hero {
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
+
+  textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .row {
+    width: 100%;
+    max-width: 100%;
+    flex-direction: column;
+  }
+
+  select,
+  button {
+    width: 100%;
+  }
+}
+textarea,
+select,
+button {
+  font-size: 16px;
+}
+
+
 
 

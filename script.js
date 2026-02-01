@@ -4,8 +4,8 @@ const btn = document.getElementById("btn");
 
 let voices = [];
 
-function loadVoices() {
-  voices = speechSynthesis.getVoices();
+function populateVoices() {
+  voices = window.speechSynthesis.getVoices();
 
   if (!voices.length) return;
 
@@ -19,17 +19,15 @@ function loadVoices() {
   });
 }
 
+// ✅ MOST IMPORTANT PART
+window.speechSynthesis.onvoiceschanged = populateVoices;
 
-speechSynthesis.onvoiceschanged = loadVoices;
-
-
-document.addEventListener("click", loadVoices, { once: true });
+// extra safety (desktop + some mobiles)
+window.addEventListener("load", () => {
+  populateVoices();
+});
 
 btn.addEventListener("click", () => {
-  if (!voices.length) {
-    loadVoices();
-  }
-
   if (!text.value.trim()) return;
 
   const utterance = new SpeechSynthesisUtterance(text.value);
@@ -40,7 +38,8 @@ btn.addEventListener("click", () => {
     utterance.lang = selectedVoice.lang;
   }
 
-  speechSynthesis.cancel();
-  speechSynthesis.speak(utterance);
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utterance);
 });
+
 

@@ -4,9 +4,9 @@ const btn = document.getElementById("btn");
 
 let voices = [];
 
-// Load available voices
 function loadVoices() {
   voices = speechSynthesis.getVoices();
+
   if (!voices.length) return;
 
   voiceSelect.innerHTML = "";
@@ -19,21 +19,28 @@ function loadVoices() {
   });
 }
 
-// Desktop + Mobile fix
+
 speechSynthesis.onvoiceschanged = loadVoices;
+
+
 document.addEventListener("click", loadVoices, { once: true });
 
 btn.addEventListener("click", () => {
+  if (!voices.length) {
+    loadVoices();
+  }
+
   if (!text.value.trim()) return;
 
   const utterance = new SpeechSynthesisUtterance(text.value);
-  const selectedVoice = voices[voiceSelect.value];
 
+  const selectedVoice = voices[voiceSelect.value];
   if (selectedVoice) {
     utterance.voice = selectedVoice;
-    utterance.lang = selectedVoice.lang; // 🔥 IMPORTANT for accent
+    utterance.lang = selectedVoice.lang;
   }
 
   speechSynthesis.cancel();
   speechSynthesis.speak(utterance);
 });
+

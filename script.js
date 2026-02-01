@@ -1,45 +1,22 @@
-const text = document.getElementById("text");
-const voiceSelect = document.getElementById("voice");
-const btn = document.getElementById("btn");
+let speech = new SpeechSynthesisUtterance();
 
-let voices = [];
 
-function populateVoices() {
-  voices = window.speechSynthesis.getVoices();
+let voices=[];
 
-  if (!voices.length) return;
+let voiceSelect = document.querySelector("select")
 
-  voiceSelect.innerHTML = "";
+window.speechSynthesis.onvoiceschanged = () => {
+    voices = window.speechSynthesis.getVoices();
+    speech.voice = voices[0];
 
-  voices.forEach((voice, index) => {
-    const option = document.createElement("option");
-    option.value = index;
-    option.textContent = `${voice.name} (${voice.lang})`;
-    voiceSelect.appendChild(option);
-  });
+
+    voices.forEach((voice,i)=> (voiceSelect.options[i])= new Option(voice.name,i));
 }
 
-// ✅ MOST IMPORTANT PART
-window.speechSynthesis.onvoiceschanged = populateVoices;
-
-// extra safety (desktop + some mobiles)
-window.addEventListener("load", () => {
-  populateVoices();
+voiceSelect.addEventListener("change", ()=> {
+    speech.voice = voices[voiceSelect.value];
 });
-
-btn.addEventListener("click", () => {
-  if (!text.value.trim()) return;
-
-  const utterance = new SpeechSynthesisUtterance(text.value);
-
-  const selectedVoice = voices[voiceSelect.value];
-  if (selectedVoice) {
-    utterance.voice = selectedVoice;
-    utterance.lang = selectedVoice.lang;
-  }
-
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(utterance);
+document.querySelector("button").addEventListener("click", ()=>{
+    speech.text = document.querySelector("textarea").value;
+    window.speechSynthesis.speak(speech);
 });
-
-

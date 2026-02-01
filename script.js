@@ -1,22 +1,39 @@
-let speech = new SpeechSynthesisUtterance();
+const text = document.getElementById("text");
+const voiceSelect = document.getElementById("voice");
+const btn = document.getElementById("btn");
 
+let voices = [];
 
-let voices=[];
+// Load available voices
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+  if (!voices.length) return;
 
-let voiceSelect = document.querySelector("select")
+  voiceSelect.innerHTML = "";
 
-window.speechSynthesis.onvoiceschanged = () => {
-    voices = window.speechSynthesis.getVoices();
-    speech.voice = voices[0];
-
-
-    voices.forEach((voice,i)=> (voiceSelect.options[i])= new Option(voice.name,i));
+  voices.forEach((voice, index) => {
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = `${voice.name} (${voice.lang})`;
+    voiceSelect.appendChild(option);
+  });
 }
 
-voiceSelect.addEventListener("change", ()=> {
-    speech.voice = voices[voiceSelect.value];
-});
-document.querySelector("button").addEventListener("click", ()=>{
-    speech.text = document.querySelector("textarea").value;
-    window.speechSynthesis.speak(speech);
+// Desktop + Mobile fix
+speechSynthesis.onvoiceschanged = loadVoices;
+document.addEventListener("click", loadVoices, { once: true });
+
+btn.addEventListener("click", () => {
+  if (!text.value.trim()) return;
+
+  const utterance = new SpeechSynthesisUtterance(text.value);
+  const selectedVoice = voices[voiceSelect.value];
+
+  if (selectedVoice) {
+    utterance.voice = selectedVoice;
+    utterance.lang = selectedVoice.lang; // 🔥 IMPORTANT for accent
+  }
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
 });

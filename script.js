@@ -1,7 +1,7 @@
 let voices = [];
 let voiceSelect = document.querySelector("select");
 
-// voices load hone par
+
 window.speechSynthesis.onvoiceschanged = () => {
   voices = window.speechSynthesis.getVoices();
 
@@ -12,16 +12,16 @@ window.speechSynthesis.onvoiceschanged = () => {
   });
 };
 
-// voice change
+
 voiceSelect.addEventListener("change", () => {
-  // nothing needed here now
+  
 });
 
 document.querySelector("button").addEventListener("click", () => {
   const text = document.querySelector("textarea").value;
   if (!text.trim()) return;
 
-  // 🔥 create utterance on click (mobile-safe)
+  
   const speech = new SpeechSynthesisUtterance(text);
 
   const selectedVoice = voices[voiceSelect.value];
@@ -33,3 +33,4 @@ document.querySelector("button").addEventListener("click", () => {
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(speech);
 });
+
